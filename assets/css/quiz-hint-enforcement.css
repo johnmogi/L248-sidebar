@@ -18,7 +18,7 @@ body.enforceHint input.wpProQuiz_questionInput {
     border-color: #e2e7ed !important;
 }
 
-/* Hide all status indicators */
+/* Hide all status indicators */ 
 .quiz-enforce-hint .ld-quiz-question-item__status,
 .quiz-enforce-hint .wpProQuiz_answerCorrectIncomplete,
 .quiz-enforce-hint .wpProQuiz_answerCorrect,
