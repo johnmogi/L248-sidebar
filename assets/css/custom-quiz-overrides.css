@@ -95,19 +95,32 @@ body.richSidebar:not(.enforceHint) .wpProQuiz_reviewQuestion li {
 
 /* Fix review question numbers clipping/cutoff */
 .wpProQuiz_reviewQuestion li {
-    line-height: 1.6 !important;
-    padding-top: 4px !important;
-    padding-bottom: 4px !important;
-    min-height: 32px !important;
+    line-height: 1.8 !important;
+    padding: 6px 8px !important;
+    min-height: 36px !important;
+    vertical-align: middle !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 /* Additional fix for the review navigation container */
 .wpProQuiz_reviewDiv {
-    padding: 8px 0 !important;
+    padding: 12px 0 !important;
+    min-height: 60px !important;
 }
 
 .wpProQuiz_reviewQuestion {
-    padding: 4px 0 !important;
+    padding: 8px 0 !important;
+    min-height: 50px !important;
+}
+
+.wpProQuiz_reviewQuestion ol {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
 }
 
 /* Hide question numbers only for rich sidebar, not enforce hint */
@@ -382,8 +395,10 @@ body.enforceHint .wpProQuiz_reviewQuestion li.wpProQuiz_reviewQuestionTarget,
 body.enforceHint .wpProQuiz_reviewQuestion li[class*="wpProQuiz_review"],
 body.enforceHint .wpProQuiz_reviewQuestion li {
     /* FORCE NEUTRAL STYLING - HIGHEST PRIORITY */
-    display: inline-block !important;
-    margin: 0 3px 5px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 2px !important;
     padding: 8px 12px !important;
     border: 1px solid #ddd !important;
     border-radius: 4px !important;
@@ -394,11 +409,13 @@ body.enforceHint .wpProQuiz_reviewQuestion li {
     font-weight: normal !important;
     pointer-events: none !important;
     text-decoration: none !important;
-    min-width: 30px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
     text-align: center !important;
     vertical-align: middle !important;
     opacity: 0.9 !important;
     cursor: default !important;
+    line-height: 1.2 !important;
 }
 
 /* ====================================
@@ -428,9 +445,11 @@ body.enforceHint .wpProQuiz_reviewQuestion li.wpProQuiz_reviewQuestionSolvedInco
 
 /* Base style for all question numbers */
 body:not(.enforceHint) .wpProQuiz_reviewQuestion li {
-    display: inline-block !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     cursor: pointer !important;
-    margin: 0 3px 5px !important;
+    margin: 2px !important;
     padding: 8px 12px !important;
     border-radius: 4px !important;
     font-size: 14px !important;
@@ -439,8 +458,10 @@ body:not(.enforceHint) .wpProQuiz_reviewQuestion li {
     vertical-align: middle !important;
     pointer-events: auto !important;
     text-decoration: none !important;
-    min-width: 30px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
     text-align: center !important;
+    line-height: 1.2 !important;
 }
 
 /* Unanswered state (default) */
