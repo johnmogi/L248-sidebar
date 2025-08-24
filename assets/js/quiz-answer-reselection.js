@@ -201,32 +201,30 @@ if (typeof jQuery === 'undefined') {
             // Remove any locks when answer is correct
             $question.removeClass('lilac-locked');
             
-            // GENTLE FIX: Clear wrong selections and highlight correct answer
-            console.log('[LilacQuiz] APPLYING FIX: Clearing wrong selections and highlighting correct answer');
+            // Clear previous state classes and inline styles
+            $question.find('.wpProQuiz_questionListItem')
+                .removeClass('lilac-correct-answer lilac-wrong-answer lilac-disabled-option')
+                .removeAttr('style');
+            
+            // Apply class-based styling to answers
             $question.find('.wpProQuiz_questionInput').each(function() {
                 const $input = $(this);
                 const $wrapper = $input.closest('.wpProQuiz_questionListItem');
                 
-                // If this is the correct answer, keep it selected and style it green
                 if ($wrapper.hasClass('wpProQuiz_answerCorrect') || 
                     $wrapper.hasClass('wpProQuiz_answerCorrectIncomplete')) {
-                    console.log('[LilacQuiz] Found correct answer, styling green');
+                    // Correct answer: keep selected and add green styling class
                     $input.prop('checked', true);
-                    
-                    // Force green styling with inline styles and classes
-                    $wrapper.attr('style', 'background-color: #d4edda !important; border: 2px solid #28a745 !important; border-radius: 4px !important; color: #155724 !important; padding: 8px !important;');
                     $wrapper.addClass('lilac-correct-answer');
-                    
                 } else {
-                    // Deselect wrong answers
-                    console.log('[LilacQuiz] Deselecting wrong answer');
+                    // Wrong answers: deselect and add faded styling class
                     $input.prop('checked', false);
-                    
-                    // Force faded styling for wrong answers
-                    $wrapper.attr('style', 'opacity: 0.6 !important; background-color: transparent !important;');
-                    $wrapper.addClass('lilac-wrong-answer');
+                    $wrapper.addClass('lilac-wrong-answer lilac-disabled-option');
                 }
             });
+            
+            // Disable all inputs after correct answer
+            $question.find('.wpProQuiz_questionInput').prop('disabled', true);
             
             // Add success message with Next button
             const $successMessage = $('<div class="lilac-correct-answer-message" style="background-color: rgb(232, 245, 233); border: 1px solid rgb(76, 175, 80); border-radius: 4px; padding: 10px 15px; margin: 15px 0px; text-align: right; font-size: 16px; display: flex; align-items: center; justify-content: space-between; direction: rtl;">' +
@@ -243,22 +241,6 @@ if (typeof jQuery === 'undefined') {
                 $question.append($successMessage);
             }
 
-            // Disable all inputs after correct answer but preserve correct answer styling
-            $question.find('.wpProQuiz_questionInput').prop('disabled', true);
-            
-            // Apply disabled styling only to non-correct answers
-            $question.find('.wpProQuiz_questionListItem').each(function() {
-                const $wrapper = $(this);
-                if (!$wrapper.hasClass('wpProQuiz_answerCorrect') && 
-                    !$wrapper.hasClass('wpProQuiz_answerCorrectIncomplete')) {
-                    $wrapper.css({
-                        'pointer-events': 'none',
-                        'cursor': 'not-allowed',
-                        'opacity': '0.6'
-                    });
-                }
-            });
-
             // Show the Next button
             const $nextButton = $question.find('.wpProQuiz_button[name="next"]');
             $nextButton.css({
@@ -272,18 +254,13 @@ if (typeof jQuery === 'undefined') {
             
         } else {
             // For incorrect answers, lock the question
-            console.log('[LilacQuiz] Incorrect answer - locking question and showing hint prompt');
-            
-            // Apply lock
             $question.addClass('lilac-locked');
             
-            // Disable answer selection
+            // Disable answer selection and apply disabled styling via class
             $question.find('.wpProQuiz_questionInput').prop('disabled', true);
-            $question.find('.wpProQuiz_questionListItem').css({
-                'pointer-events': 'none',
-                'cursor': 'not-allowed',
-                'opacity': '0.7'
-            });
+            $question.find('.wpProQuiz_questionListItem')
+                .addClass('lilac-disabled-option')
+                .removeAttr('style');
             
             // Hide check button
             $question.find('.wpProQuiz_button[name="check"]').css({
@@ -337,13 +314,11 @@ if (typeof jQuery === 'undefined') {
         // Remove hint message
         $question.find('.lilac-hint-message').remove();
         
-        // Re-enable answer selection
+        // Re-enable answer selection and clear styling classes
         $question.find('.wpProQuiz_questionInput').prop('disabled', false);
-        $question.find('.wpProQuiz_questionListItem').css({
-            'pointer-events': 'auto',
-            'cursor': 'pointer',
-            'opacity': '1'
-        });
+        $question.find('.wpProQuiz_questionListItem')
+            .removeClass('lilac-correct-answer lilac-wrong-answer lilac-disabled-option')
+            .removeAttr('style');
         
         // Clear any previous selection to ensure fresh start
         $question.find('.wpProQuiz_questionInput').prop('checked', false);
@@ -405,10 +380,13 @@ if (typeof jQuery === 'undefined') {
             }
         });
 
-        // Handle answer selection (remove messages)
+        // Handle answer selection (remove messages only if not disabled)
         $(document).on('change', '.wpProQuiz_questionInput', function() {
             const $question = $(this).closest('.wpProQuiz_listItem');
-            $question.find('.lilac-correct-answer-message').remove();
+            // Only remove success message if inputs are not disabled (question not answered correctly)
+            if (!$(this).prop('disabled')) {
+                $question.find('.lilac-correct-answer-message').remove();
+            }
         });
 
         // Handle next button in success message
