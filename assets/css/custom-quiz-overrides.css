@@ -4,13 +4,20 @@
  
 
 
-/* Override LearnDash quiz review navigation */
+/* Override LearnDash quiz review navigation - fix horizontal scroll */
 .wpProQuiz_reviewQuestion {
-    overflow: auto !important;
+    overflow: visible !important;
 }
 
-/* Hide navigation arrows and legend */
-body #wpProQuiz_content_container .wpProQuiz_content .wpProQuiz_reviewLegend,
+.wpProQuiz_reviewQuestion ol {
+    white-space: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 5px 10px !important; /* Better padding for scrollbar */
+}
+
+/* Hide navigation arrows and legend - Updated to allow legend for enforce hint */
+body.richSidebar #wpProQuiz_content_container .wpProQuiz_content .wpProQuiz_reviewLegend,
 body #wpProQuiz_content_container .wpProQuiz_content .wpProQuiz_reviewButtons {
     display: none !important;
 }
@@ -75,35 +82,36 @@ body.enforceHint input.wpProQuiz_button[value="חזרה"] {
     display: none !important;
 }
 
-/* Hide question numbers in sidebar when richSidebar is active */
-body.richSidebar .wpProQuiz_reviewQuestion ol,
-body.richSidebar .wpProQuiz_reviewQuestion li {
+/* Hide question numbers in sidebar when richSidebar is active (but not enforce hint) */
+body.richSidebar:not(.enforceHint) .wpProQuiz_reviewQuestion ol,
+body.richSidebar:not(.enforceHint) .wpProQuiz_reviewQuestion li {
     list-style: none !important;
     margin: 0 !important;
     padding: 0 !important;
 }
 
-body.richSidebar .wpProQuiz_reviewQuestion {
+/* Hide question numbers only for rich sidebar, not enforce hint */
+body.richSidebar:not(.enforceHint) .wpProQuiz_reviewQuestion {
     display: none !important;
 }
 
 /**
  * Hide quiz review legend and all navigation arrows
  */
-/* Hide the review legend */
-.wpProQuiz_reviewLegend,
-div.wpProQuiz_reviewLegend,
-.learndash-quiz-review-legend,
-.wpProQuiz_reviewDiv .wpProQuiz_reviewLegend {
+/* Hide the review legend only for rich sidebar quizzes */
+body.richSidebar .wpProQuiz_reviewLegend,
+body.richSidebar div.wpProQuiz_reviewLegend,
+body.richSidebar .learndash-quiz-review-legend,
+body.richSidebar .wpProQuiz_reviewDiv .wpProQuiz_reviewLegend {
     display: none !important;
 }
 
-/* Hide all navigation buttons and arrows */
+/* Hide all navigation buttons and arrows but allow wpProQuiz_reviewQuestion for enforce hint */
 .wpProQuiz_reviewButtons,
 .wpProQuiz_reviewDiv .wpProQuiz_reviewButtons,
 body .wpProQuiz_reviewDiv button,
 body .wpProQuiz_reviewDiv input[type="button"],
-.wpProQuiz_reviewDiv > div:not(.wpProQuiz_reviewQuestion),
+body:not(.enforceHint) .wpProQuiz_reviewDiv > div:not(.wpProQuiz_reviewQuestion),
 .wpProQuiz_reviewDiv #quiz_continue_link,
 .wpProQuiz_reviewDiv a.wpProQuiz_button {
     display: none !important;
@@ -210,12 +218,233 @@ display: none;
     background-color: transparent !important;
 }
 
-/* Block navigation for enforce_hint quizzes */
-body.quiz-enforce-hint .wpProQuiz_reviewQuestion {
-    pointer-events: none !important;
-    opacity: 0.6;
+/* Allow review legend for enforce hint quizzes but keep navigation restricted */
+body.enforceHint .wpProQuiz_reviewLegend {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
-body.quiz-enforce-hint .wpProQuiz_reviewQuestion li {
-    cursor: not-allowed !important;
+/* Allow question numbers to be visible for enforce hint quizzes */
+body.enforceHint .wpProQuiz_reviewQuestion {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+
+body.enforceHint .wpProQuiz_reviewQuestion ol {
+    display: block !important;
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* ====================================
+   PROTECT LILAC SUCCESS MESSAGES
+   ==================================== */
+
+/* Ensure lilac correct answer messages are always visible and properly styled */
+.lilac-correct-answer-message {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: static !important;
+    pointer-events: auto !important;
+    background-color: rgb(232, 245, 233) !important;
+    border: 1px solid rgb(76, 175, 80) !important;
+    border-radius: 4px !important;
+    padding: 10px 15px !important;
+    margin: 15px 0px !important;
+    text-align: right !important;
+    font-size: 16px !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    direction: rtl !important;
+    z-index: 1000 !important;
+}
+
+/* Protect the success message button */
+.lilac-correct-answer-message .lilac-force-next {
+    display: inline-block !important;
+    visibility: visible !important;
+    background-color: rgb(46, 89, 217) !important;
+    color: white !important;
+    font-weight: bold !important;
+    border: 2px solid rgb(24, 53, 155) !important;
+    border-radius: 4px !important;
+    padding: 8px 24px !important;
+    cursor: pointer !important;
+    font-size: 16px !important;
+    margin-right: 10px !important;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 5px !important;
+    pointer-events: auto !important;
+}
+
+/* Protect success message text */
+.lilac-correct-answer-message span {
+    display: inline !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* ====================================
+   ENFORCE HINT QUIZ STYLING (NEUTRAL)
+   ==================================== */
+
+/* Allow review legend for enforce hint quizzes but keep navigation restricted */
+body.enforceHint .wpProQuiz_reviewLegend {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Allow question numbers to be visible for enforce hint quizzes */
+body.enforceHint .wpProQuiz_reviewQuestion {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: none !important;
+    margin: 15px 0 !important;
+    padding: 0 !important;
+}
+
+body.enforceHint .wpProQuiz_reviewQuestion ol {
+    display: block !important;
+    list-style: none !important;
+    margin: 10px 0 !important;
+    padding: 0 !important;
+    text-align: center !important;
+}
+
+/* MAXIMUM SPECIFICITY - Override all LearnDash styles for enforce hint */
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_box li.wpProQuiz_reviewQuestionSolvedIncorrect,
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_box li.wpProQuiz_reviewQuestionSolvedCorrect,
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_box li.wpProQuiz_reviewQuestionSolved,
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_box li.wpProQuiz_reviewQuestionTarget,
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_reviewQuestion li.wpProQuiz_reviewQuestionSolvedIncorrect,
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_reviewQuestion li.wpProQuiz_reviewQuestionSolvedCorrect,
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_reviewQuestion li.wpProQuiz_reviewQuestionSolved,
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_reviewQuestion li.wpProQuiz_reviewQuestionTarget,
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_reviewDiv li.wpProQuiz_reviewQuestionSolvedIncorrect,
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_reviewDiv li.wpProQuiz_reviewQuestionSolvedCorrect,
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_reviewDiv li.wpProQuiz_reviewQuestionSolved,
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_reviewDiv li.wpProQuiz_reviewQuestionTarget,
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_reviewDiv li[class*="wpProQuiz_review"],
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_reviewDiv li,
+body.enforceHint .wpProQuiz_reviewQuestion li.wpProQuiz_reviewQuestionSolvedIncorrect,
+body.enforceHint .wpProQuiz_reviewQuestion li.wpProQuiz_reviewQuestionSolvedCorrect,
+body.enforceHint .wpProQuiz_reviewQuestion li.wpProQuiz_reviewQuestionSolved,
+body.enforceHint .wpProQuiz_reviewQuestion li.wpProQuiz_reviewQuestionTarget,
+body.enforceHint .wpProQuiz_reviewQuestion li[class*="wpProQuiz_review"],
+body.enforceHint .wpProQuiz_reviewQuestion li {
+    /* FORCE NEUTRAL STYLING - HIGHEST PRIORITY */
+    display: inline-block !important;
+    margin: 0 3px 5px !important;
+    padding: 8px 12px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 4px !important;
+    background-color: #f5f5f5 !important;
+    background: #f5f5f5 !important;
+    color: #777 !important;
+    font-size: 14px !important;
+    font-weight: normal !important;
+    pointer-events: none !important;
+    text-decoration: none !important;
+    min-width: 30px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    opacity: 0.9 !important;
+    cursor: default !important;
+}
+
+/* ====================================
+   ENFORCE HINT QUIZ STYLING (GREEN AFTER PROGRESS)
+   Applies to solved items ONLY after leaving the question (not the current target)
+   ==================================== */
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_box li.wpProQuiz_reviewQuestionSolvedCorrect:not(.wpProQuiz_reviewQuestionTarget),
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_box li.wpProQuiz_reviewQuestionSolvedIncorrect:not(.wpProQuiz_reviewQuestionTarget),
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_reviewQuestion li.wpProQuiz_reviewQuestionSolvedCorrect:not(.wpProQuiz_reviewQuestionTarget),
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_reviewQuestion li.wpProQuiz_reviewQuestionSolvedIncorrect:not(.wpProQuiz_reviewQuestionTarget),
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_reviewDiv li.wpProQuiz_reviewQuestionSolvedCorrect:not(.wpProQuiz_reviewQuestionTarget),
+body.enforceHint .learndash-wrapper .wpProQuiz_content .wpProQuiz_reviewDiv li.wpProQuiz_reviewQuestionSolvedIncorrect:not(.wpProQuiz_reviewQuestionTarget),
+body.enforceHint .wpProQuiz_reviewQuestion li.wpProQuiz_reviewQuestionSolvedCorrect:not(.wpProQuiz_reviewQuestionTarget),
+body.enforceHint .wpProQuiz_reviewQuestion li.wpProQuiz_reviewQuestionSolvedIncorrect:not(.wpProQuiz_reviewQuestionTarget) {
+    background-color: #e8f5e9 !important; /* Light green */
+    background: #e8f5e9 !important;
+    border: 1px solid #4caf50 !important;
+    color: #2e7d32 !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
+    cursor: default !important;
+}
+
+/* ====================================
+   NON-ENFORCED HINT QUIZ STYLING
+   ==================================== */
+
+/* Base style for all question numbers */
+body:not(.enforceHint) .wpProQuiz_reviewQuestion li {
+    display: inline-block !important;
+    cursor: pointer !important;
+    margin: 0 3px 5px !important;
+    padding: 8px 12px !important;
+    border-radius: 4px !important;
+    font-size: 14px !important;
+    font-weight: normal !important;
+    transition: all 0.2s ease !important;
+    vertical-align: middle !important;
+    pointer-events: auto !important;
+    text-decoration: none !important;
+    min-width: 30px !important;
+    text-align: center !important;
+}
+
+/* Unanswered state (default) */
+body:not(.enforceHint) .wpProQuiz_reviewQuestion li {
+    background-color: #f9f9f9 !important; /* Light Gray */
+    border: 1px solid #ccc !important;    /* Light Gray Border */
+    color: #333 !important;
+}
+
+/* Answered state */
+body:not(.enforceHint) .wpProQuiz_reviewQuestion li.wpProQuiz_reviewQuestionSolved,
+body:not(.enforceHint) .wpProQuiz_reviewQuestion li.wpProQuiz_reviewQuestionSolvedCorrect,
+body:not(.enforceHint) .wpProQuiz_reviewQuestion li.wpProQuiz_reviewQuestionSolvedIncorrect {
+    background-color: #e0e0e0 !important; /* Darker Gray */
+    border: 1px solid #999 !important;    /* Medium Gray Border */
+    color: #333 !important;
+}
+
+/* Current question indicator */
+body:not(.enforceHint) .wpProQuiz_reviewQuestion li.wpProQuiz_reviewQuestionTarget {
+    background-color: #d0d0d0 !important; /* Medium Gray */
+    border: 2px solid #666 !important;    /* Dark Gray Border */
+    font-weight: bold !important;
+    color: #333 !important;
+    padding: 7px 11px !important; /* Compensate for thicker border */
+}
+
+/* Hover effect for unanswered questions */
+body:not(.enforceHint) .wpProQuiz_reviewQuestion li:not(.wpProQuiz_reviewQuestionSolved):not(.wpProQuiz_reviewQuestionTarget):hover {
+    background-color: #f0f0f0 !important;
+    border-color: #aaa !important;
+}
+
+/* Active/Clicked state */
+body:not(.enforceHint) .wpProQuiz_reviewQuestion li:active {
+    transform: translateY(1px) !important;
+}
+
+/* Ensure the question number list is properly spaced */
+body:not(.enforceHint) .wpProQuiz_reviewQuestion ol {
+    margin: 10px 0 !important;
+    padding: 0 !important;
+    text-align: center !important;
+}
+
+/* Make sure the container has proper spacing */
+body:not(.enforceHint) .wpProQuiz_reviewQuestion {
+    margin: 15px 0 !important;
+    padding: 0 !important;
 }
