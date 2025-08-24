@@ -4,7 +4,8 @@
  * 
  * Enables users to reselect and submit answers after incorrect submission
  * Part of the Enforce Hint feature for the Lilac Quiz Sidebar plugin
- * Version 1.2.1 - Enhanced Next button visibility
+ * Version 1.2.3 - FIXED: Deselect wrong answers when correct answer submitted
+ * Cache Buster: 2025-08-24 11:26:37
  */
 
 // Check for jQuery
@@ -200,6 +201,33 @@ if (typeof jQuery === 'undefined') {
             // Remove any locks when answer is correct
             $question.removeClass('lilac-locked');
             
+            // GENTLE FIX: Clear wrong selections and highlight correct answer
+            console.log('[LilacQuiz] APPLYING FIX: Clearing wrong selections and highlighting correct answer');
+            $question.find('.wpProQuiz_questionInput').each(function() {
+                const $input = $(this);
+                const $wrapper = $input.closest('.wpProQuiz_questionListItem');
+                
+                // If this is the correct answer, keep it selected and style it green
+                if ($wrapper.hasClass('wpProQuiz_answerCorrect') || 
+                    $wrapper.hasClass('wpProQuiz_answerCorrectIncomplete')) {
+                    console.log('[LilacQuiz] Found correct answer, styling green');
+                    $input.prop('checked', true);
+                    
+                    // Force green styling with inline styles and classes
+                    $wrapper.attr('style', 'background-color: #d4edda !important; border: 2px solid #28a745 !important; border-radius: 4px !important; color: #155724 !important; padding: 8px !important;');
+                    $wrapper.addClass('lilac-correct-answer');
+                    
+                } else {
+                    // Deselect wrong answers
+                    console.log('[LilacQuiz] Deselecting wrong answer');
+                    $input.prop('checked', false);
+                    
+                    // Force faded styling for wrong answers
+                    $wrapper.attr('style', 'opacity: 0.6 !important; background-color: transparent !important;');
+                    $wrapper.addClass('lilac-wrong-answer');
+                }
+            });
+            
             // Add success message with Next button
             const $successMessage = $('<div class="lilac-correct-answer-message" style="background-color: rgb(232, 245, 233); border: 1px solid rgb(76, 175, 80); border-radius: 4px; padding: 10px 15px; margin: 15px 0px; text-align: right; font-size: 16px; display: flex; align-items: center; justify-content: space-between; direction: rtl;">' +
                 '<span style="font-weight:bold;color:#4CAF50;">✓ תשובה נכונה!</span>' +
@@ -215,14 +243,21 @@ if (typeof jQuery === 'undefined') {
                 $question.append($successMessage);
             }
 
-            // Disable all inputs after correct answer
-            $question.find('.wpProQuiz_questionInput').prop('disabled', true)
-                .closest('.wpProQuiz_questionListItem')
-                .css({
-                    'pointer-events': 'none',
-                    'cursor': 'not-allowed',
-                    'opacity': '0.6'
-                });
+            // Disable all inputs after correct answer but preserve correct answer styling
+            $question.find('.wpProQuiz_questionInput').prop('disabled', true);
+            
+            // Apply disabled styling only to non-correct answers
+            $question.find('.wpProQuiz_questionListItem').each(function() {
+                const $wrapper = $(this);
+                if (!$wrapper.hasClass('wpProQuiz_answerCorrect') && 
+                    !$wrapper.hasClass('wpProQuiz_answerCorrectIncomplete')) {
+                    $wrapper.css({
+                        'pointer-events': 'none',
+                        'cursor': 'not-allowed',
+                        'opacity': '0.6'
+                    });
+                }
+            });
 
             // Show the Next button
             const $nextButton = $question.find('.wpProQuiz_button[name="next"]');
