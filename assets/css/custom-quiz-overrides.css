@@ -244,11 +244,19 @@ display: none;
     transition: border-color 0.2s ease;
 }
 
-/* Remove any background colors from answer states */
+/* Remove any background colors from answer states - force neutral base */
 .wpProQuiz_questionListItem.wpProQuiz_answerCorrectIncomplete,
 .wpProQuiz_questionListItem.wpProQuiz_answerCorrect,
 .wpProQuiz_questionListItem.wpProQuiz_answerIncorrect {
     background-color: transparent !important;
+}
+
+/* Override LearnDash's default red styling for incorrect answers */
+.learndash-wrapper .wpProQuiz_content .wpProQuiz_questionListItem.wpProQuiz_answerIncorrect label,
+.wpProQuiz_questionListItem.wpProQuiz_answerIncorrect label {
+    background-color: transparent !important;
+    border-color: #e2e7ed !important;
+    color: inherit !important;
 }
 
 /* Allow review legend for enforce hint quizzes but keep navigation restricted */
@@ -328,20 +336,30 @@ body.enforceHint .wpProQuiz_reviewQuestion ol {
 /* Correct answer styling - green background */
 .lilac-correct-answer label {
     background-color: #d4edda !important;
-    border-color: #28a745 !important;
+    border: 2px solid #28a745 !important;
     color: #155724 !important;
 }
 
-/* Wrong answer styling - faded */
+/* Wrong answer styling - neutral/faded only, no red */
 .lilac-wrong-answer label {
     opacity: 0.6 !important;
-    background-color: transparent !important;
+    background-color: #f8f9fa !important;
+    border: 2px solid #e2e7ed !important;
+    color: #6c757d !important;
 }
 
 /* Disabled option styling */
 .lilac-disabled-option label {
     pointer-events: none !important;
     cursor: not-allowed !important;
+}
+
+/* Override any LearnDash red styling on incorrect answers */
+.wpProQuiz_questionListItem.wpProQuiz_answerIncorrect label,
+.lilac-wrong-answer.wpProQuiz_answerIncorrect label {
+    background-color: #f8f9fa !important;
+    border-color: #e2e7ed !important;
+    color: #6c757d !important;
 }
 
 /* ====================================
