@@ -1,3 +1,8 @@
+body.enforceHint input.wpProQuiz_questionInput {
+    display: none !important;
+}
+
+
 /* Hide Next button when enforce hint is active */
 .quiz-enforce-hint .wpProQuiz_button[name="next"],
 .quiz-enforce-hint input[name="next"],

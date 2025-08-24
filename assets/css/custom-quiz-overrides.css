@@ -1,8 +1,11 @@
 /**
  * Custom overrides for quiz answer styling
  */
- 
 
+/* Hide radio inputs in enforce hint mode */
+body.enforceHint input.wpProQuiz_questionInput {
+    display: none !important;
+}
 
 /* Override LearnDash quiz review navigation - fix horizontal scroll */
 .wpProQuiz_reviewQuestion {
