@@ -371,6 +371,25 @@ body.enforceHint .wpProQuiz_reviewQuestion ol {
     cursor: not-allowed !important;
 }
 
+/* Processing indicator styling */
+.lilac-processing {
+    display: inline-block;
+    margin-left: 8px;
+    opacity: 0.7;
+    font-size: 12px;
+    transition: transform 0.1s ease;
+    color: #6c757d;
+}
+
+/* Selection feedback styling */
+.wpProQuiz_questionListItem label {
+    transition: all 0.15s ease;
+}
+
+.wpProQuiz_questionListItem label:hover {
+    transform: scale(1.01);
+}
+
 /* Override any LearnDash red styling on incorrect answers */
 .wpProQuiz_questionListItem.wpProQuiz_answerIncorrect label,
 .lilac-wrong-answer.wpProQuiz_answerIncorrect label {

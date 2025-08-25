@@ -222,13 +222,19 @@ if (typeof jQuery === 'undefined') {
                     $input.prop('checked', true);
                     $wrapper.addClass('lilac-correct-answer');
                     
+                    // Clear any processing indicators first
+                    $wrapper.find('.lilac-processing').remove();
+                    clearInterval($wrapper.data('rotateInterval'));
+                    
                     // Force green styling with inline styles using !important to override CSS conflicts
                     $wrapper.find('label').attr('style', 
                         'background-color: #d4edda !important; ' +
                         'background: #d4edda !important; ' +
                         'border: 2px solid #28a745 !important; ' +
                         'color: #155724 !important; ' +
-                        'opacity: 1 !important;'
+                        'opacity: 1 !important; ' +
+                        'transform: scale(1) !important; ' +
+                        'box-shadow: 0 2px 12px rgba(40, 167, 69, 0.3) !important;'
                     );
                 } else if (hasCorrectClass && !isSelected) {
                     // This is a correct answer option but not selected - don't style it green
@@ -403,45 +409,97 @@ if (typeof jQuery === 'undefined') {
         // Handle answer selection (remove messages only if not disabled)
         $(document).on('change', '.wpProQuiz_questionInput', function() {
             const $question = $(this).closest('.wpProQuiz_listItem');
+            const $wrapper = $(this).closest('.wpProQuiz_questionListItem');
+            
             // Only remove success message if inputs are not disabled (question not answered correctly)
             if (!$(this).prop('disabled')) {
                 $question.find('.lilac-correct-answer-message').remove();
             }
             
-            // Handle post-hint answer selection - check for correct answer and apply styling immediately
-            if ($question.hasClass('lilac-post-hint') && $(this).prop('checked')) {
-                const $wrapper = $(this).closest('.wpProQuiz_questionListItem');
+            // IMMEDIATE FEEDBACK: Show selection styling instantly
+            if ($(this).prop('checked')) {
+                // Add subtle selection indicator immediately
+                $wrapper.find('label').css({
+                    'transform': 'scale(1.02)',
+                    'transition': 'all 0.15s ease',
+                    'box-shadow': '0 2px 8px rgba(0,0,0,0.1)'
+                });
                 
-                // Wait a short moment for LearnDash to apply its classes, then check
-                setTimeout(() => {
+                // Add subtle processing indicator
+                const $processingIndicator = $('<span class="lilac-processing" style="margin-left: 8px; opacity: 0.7; font-size: 12px;">⟳</span>');
+                $wrapper.find('label').append($processingIndicator);
+                
+                // Animate the processing indicator
+                let rotation = 0;
+                const rotateInterval = setInterval(() => {
+                    rotation += 45;
+                    $processingIndicator.css('transform', `rotate(${rotation}deg)`);
+                }, 100);
+                
+                // Store interval for cleanup
+                $wrapper.data('rotateInterval', rotateInterval);
+            }
+            
+            // Handle post-hint answer selection with optimized timing
+            if ($question.hasClass('lilac-post-hint') && $(this).prop('checked')) {
+                // Try immediate check first (optimistic approach)
+                const immediateCheck = () => {
                     if ($wrapper.hasClass('wpProQuiz_answerCorrect') || $wrapper.hasClass('wpProQuiz_answerCorrectIncomplete')) {
-                        console.log('[LilacQuiz] Post-hint correct answer detected, applying green styling');
-                        
-                        // Clear all previous styling
-                        $question.find('.wpProQuiz_questionListItem')
-                            .removeClass('lilac-correct-answer lilac-wrong-answer lilac-disabled-option');
-                        
-                        // Apply green styling to the correct answer
-                        $wrapper.addClass('lilac-correct-answer');
-                        
-                        // Force green styling with inline styles using !important to override CSS conflicts
-                        $wrapper.find('label').attr('style', 
-                            'background-color: #d4edda !important; ' +
-                            'background: #d4edda !important; ' +
-                            'border: 2px solid #28a745 !important; ' +
-                            'color: #155724 !important; ' +
-                            'opacity: 1 !important;'
-                        );
-                        
-                        // Remove the post-hint marker
-                        $question.removeClass('lilac-post-hint');
-                        
-                        // Trigger the full correct answer handling
-                        handleAnswerResult($question, true);
+                        applyCorrectAnswerStyling($question, $wrapper);
+                        return true;
                     }
-                }, 200); // Small delay to ensure LearnDash classes are applied
+                    return false;
+                };
+                
+                // If immediate check fails, use progressive delays
+                if (!immediateCheck()) {
+                    // Try after 50ms (much faster than before)
+                    setTimeout(() => {
+                        if (!immediateCheck()) {
+                            // Fallback to 150ms if still not ready
+                            setTimeout(() => {
+                                if ($wrapper.hasClass('wpProQuiz_answerCorrect') || $wrapper.hasClass('wpProQuiz_answerCorrectIncomplete')) {
+                                    applyCorrectAnswerStyling($question, $wrapper);
+                                }
+                            }, 100);
+                        }
+                    }, 50);
+                }
             }
         });
+        
+        // Helper function for applying correct answer styling
+        function applyCorrectAnswerStyling($question, $wrapper) {
+            console.log('[LilacQuiz] Post-hint correct answer detected, applying green styling');
+            
+            // Clear processing indicators
+            $question.find('.lilac-processing').remove();
+            clearInterval($wrapper.data('rotateInterval'));
+            
+            // Clear all previous styling
+            $question.find('.wpProQuiz_questionListItem')
+                .removeClass('lilac-correct-answer lilac-wrong-answer lilac-disabled-option');
+            
+            // Apply green styling to the correct answer
+            $wrapper.addClass('lilac-correct-answer');
+            
+            // Force green styling with inline styles using !important to override CSS conflicts
+            $wrapper.find('label').attr('style', 
+                'background-color: #d4edda !important; ' +
+                'background: #d4edda !important; ' +
+                'border: 2px solid #28a745 !important; ' +
+                'color: #155724 !important; ' +
+                'opacity: 1 !important; ' +
+                'transform: scale(1) !important; ' +
+                'box-shadow: 0 2px 12px rgba(40, 167, 69, 0.3) !important;'
+            );
+            
+            // Remove the post-hint marker
+            $question.removeClass('lilac-post-hint');
+            
+            // Trigger the full correct answer handling
+            handleAnswerResult($question, true);
+        }
 
         // Handle next button in success message
         $(document).on('click', '.lilac-force-next', function(e) {
