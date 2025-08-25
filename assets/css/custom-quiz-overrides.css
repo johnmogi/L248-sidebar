@@ -334,10 +334,27 @@ body.enforceHint .wpProQuiz_reviewQuestion ol {
    ==================================== */
 
 /* Correct answer styling - green background */
-.lilac-correct-answer label {
+.learndash-wrapper .wpProQuiz_content .wpProQuiz_questionListItem.lilac-correct-answer label,
+.wpProQuiz_content .wpProQuiz_questionListItem.lilac-correct-answer label,
+.wpProQuiz_questionListItem.lilac-correct-answer label.is-selected,
+.wpProQuiz_questionListItem.lilac-correct-answer label {
     background-color: #d4edda !important;
     border: 2px solid #28a745 !important;
     color: #155724 !important;
+    opacity: 1 !important;
+}
+
+/* Ultra-specific selector for post-hint correct answers - override enforce-hint styles */
+.quiz-enforce-hint .learndash-wrapper .wpProQuiz_content .wpProQuiz_questionListItem:not(.ld-sortable__item).wpProQuiz_answerCorrectIncomplete.lilac-correct-answer label,
+.quiz-enforce-hint .learndash-wrapper .wpProQuiz_content .wpProQuiz_questionListItem.wpProQuiz_answerCorrectIncomplete.lilac-correct-answer label,
+.wpProQuiz_content .wpProQuiz_questionListItem.wpProQuiz_answerCorrectIncomplete.lilac-correct-answer label.is-selected,
+.wpProQuiz_content .wpProQuiz_questionListItem.wpProQuiz_answerCorrectIncomplete.lilac-correct-answer label,
+.wpProQuiz_questionListItem.wpProQuiz_answerCorrectIncomplete.is-selected.lilac-correct-answer label {
+    background-color: #d4edda !important;
+    background: #d4edda !important;
+    border: 2px solid #28a745 !important;
+    color: #155724 !important;
+    opacity: 1 !important;
 }
 
 /* Wrong answer styling - neutral/faded only, no red */

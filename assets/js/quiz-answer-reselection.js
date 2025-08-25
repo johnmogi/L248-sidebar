@@ -211,11 +211,28 @@ if (typeof jQuery === 'undefined') {
                 const $input = $(this);
                 const $wrapper = $input.closest('.wpProQuiz_questionListItem');
                 
-                if ($wrapper.hasClass('wpProQuiz_answerCorrect') || 
-                    $wrapper.hasClass('wpProQuiz_answerCorrectIncomplete')) {
-                    // Correct answer: keep selected and add green styling class
+                // Check if this is the selected answer
+                const isSelected = $input.prop('checked');
+                // Check if this answer has the correct class from LearnDash
+                const hasCorrectClass = $wrapper.hasClass('wpProQuiz_answerCorrect') || 
+                                       $wrapper.hasClass('wpProQuiz_answerCorrectIncomplete');
+                
+                if (isSelected && hasCorrectClass) {
+                    // This is the selected correct answer: keep selected and add green styling class
                     $input.prop('checked', true);
                     $wrapper.addClass('lilac-correct-answer');
+                    
+                    // Force green styling with inline styles using !important to override CSS conflicts
+                    $wrapper.find('label').attr('style', 
+                        'background-color: #d4edda !important; ' +
+                        'background: #d4edda !important; ' +
+                        'border: 2px solid #28a745 !important; ' +
+                        'color: #155724 !important; ' +
+                        'opacity: 1 !important;'
+                    );
+                } else if (hasCorrectClass && !isSelected) {
+                    // This is a correct answer option but not selected - don't style it green
+                    // Just leave it as is
                 } else {
                     // Wrong answers: deselect and add faded styling class
                     $input.prop('checked', false);
@@ -322,6 +339,9 @@ if (typeof jQuery === 'undefined') {
         
         // Clear any previous selection to ensure fresh start
         $question.find('.wpProQuiz_questionInput').prop('checked', false);
+        
+        // Mark question as post-hint to ensure proper styling after answer selection
+        $question.addClass('lilac-post-hint');
     }
 
     /**
@@ -386,6 +406,40 @@ if (typeof jQuery === 'undefined') {
             // Only remove success message if inputs are not disabled (question not answered correctly)
             if (!$(this).prop('disabled')) {
                 $question.find('.lilac-correct-answer-message').remove();
+            }
+            
+            // Handle post-hint answer selection - check for correct answer and apply styling immediately
+            if ($question.hasClass('lilac-post-hint') && $(this).prop('checked')) {
+                const $wrapper = $(this).closest('.wpProQuiz_questionListItem');
+                
+                // Wait a short moment for LearnDash to apply its classes, then check
+                setTimeout(() => {
+                    if ($wrapper.hasClass('wpProQuiz_answerCorrect') || $wrapper.hasClass('wpProQuiz_answerCorrectIncomplete')) {
+                        console.log('[LilacQuiz] Post-hint correct answer detected, applying green styling');
+                        
+                        // Clear all previous styling
+                        $question.find('.wpProQuiz_questionListItem')
+                            .removeClass('lilac-correct-answer lilac-wrong-answer lilac-disabled-option');
+                        
+                        // Apply green styling to the correct answer
+                        $wrapper.addClass('lilac-correct-answer');
+                        
+                        // Force green styling with inline styles using !important to override CSS conflicts
+                        $wrapper.find('label').attr('style', 
+                            'background-color: #d4edda !important; ' +
+                            'background: #d4edda !important; ' +
+                            'border: 2px solid #28a745 !important; ' +
+                            'color: #155724 !important; ' +
+                            'opacity: 1 !important;'
+                        );
+                        
+                        // Remove the post-hint marker
+                        $question.removeClass('lilac-post-hint');
+                        
+                        // Trigger the full correct answer handling
+                        handleAnswerResult($question, true);
+                    }
+                }, 200); // Small delay to ensure LearnDash classes are applied
             }
         });
 
