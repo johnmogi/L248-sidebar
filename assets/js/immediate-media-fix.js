@@ -110,7 +110,7 @@
             
         } else {
             // No media found, show placeholder (but still don't hide media-content completely)
-            console.log('Lilac Quiz Sidebar: No media found, showing placeholder');
+            // console.log('Lilac Quiz Sidebar: No media found, showing placeholder'); // Reduced console logging
             
             // Keep media-content visible but empty, show placeholder
             $mediaContent.show().css('opacity', '1');

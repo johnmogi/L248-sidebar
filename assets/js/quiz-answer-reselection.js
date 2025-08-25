@@ -338,7 +338,7 @@ if (typeof jQuery === 'undefined') {
 
             if (!$selected.length) return;
 
-            console.log('[LilacQuiz] Check button clicked, waiting for quiz calculation...');
+            // console.log('[LilacQuiz] Check button clicked, waiting for quiz calculation...'); // Reduced logging
             
             // Let the native quiz handle the check first
             // Then watch for the result
@@ -411,22 +411,14 @@ if (typeof jQuery === 'undefined') {
             const $selected = $question.find('.wpProQuiz_questionInput:checked');
             if ($selected.length) {
                 const $wrapper = $selected.closest('.wpProQuiz_questionListItem');
-                const classes = $wrapper.attr('class') || '';
                 
-                // Only log every 5th check to reduce console spam
-                if (checkCount % 5 === 1) {
-                    console.log('[LilacQuiz] Checking classes:', classes);
-                }
-                
-                // Check if quiz has applied result classes
-                if ($wrapper.hasClass('wpProQuiz_answerCorrect') || 
-                    $wrapper.hasClass('wpProQuiz_answerCorrectIncomplete')) {
-                    console.log('[LilacQuiz] Correct answer detected! Classes:', classes);
+                if ($wrapper.hasClass('wpProQuiz_answerCorrect') || $wrapper.hasClass('wpProQuiz_answerCorrectIncomplete')) {
+                    // console.log('[LilacQuiz] Correct answer detected! Classes:', $wrapper.attr('class')); // Reduced logging
                     clearInterval(checkInterval);
                     handleAnswerResult($question, true);
                     return;
                 } else if ($wrapper.hasClass('wpProQuiz_answerIncorrect')) {
-                    console.log('[LilacQuiz] Incorrect answer detected! Classes:', classes);
+                    // console.log('[LilacQuiz] Incorrect answer detected! Classes:', $wrapper.attr('class')); // Reduced logging
                     clearInterval(checkInterval);
                     handleAnswerResult($question, false);
                     return;
@@ -554,7 +546,7 @@ if (typeof jQuery === 'undefined') {
                 setTimeout(function() {
                     const $checkButton = $question.find('input.wpProQuiz_button[name="check"]');
                     if ($checkButton.length && !$checkButton.prop('disabled')) {
-                        console.log('[LilacQuiz] Auto-checking from answer click');
+                        // console.log('[LilacQuiz] Auto-checking from answer click'); // Reduced logging
                         $checkButton.trigger('click');
                     }
                 }, 100);
