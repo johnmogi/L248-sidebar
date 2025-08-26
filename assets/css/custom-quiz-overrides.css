@@ -384,10 +384,130 @@ body.enforceHint .wpProQuiz_reviewQuestion ol {
 /* Selection feedback styling */
 .wpProQuiz_questionListItem label {
     transition: all 0.15s ease;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .wpProQuiz_questionListItem label:hover {
     transform: scale(1.01);
+}
+
+/* HORIZONTAL SCROLLBAR ELIMINATION - TARGETED FIX */
+
+/* Force main containers to never show horizontal scrollbars */
+html, body {
+    overflow-x: hidden !important;
+}
+
+/* Hide scrollbars on main page containers */
+.site-main, #primary, main {
+    overflow-x: hidden !important;
+}
+
+/* Main containers - absolute width control */
+.wpProQuiz_content,
+.quiz-container,
+.quiz-content,
+.lilac-enhanced-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+}
+
+/* Quiz elements - force containment */
+.wpProQuiz_quiz,
+.wpProQuiz_list,
+.wpProQuiz_listItem,
+.wpProQuiz_question,
+.wpProQuiz_questionList {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+}
+
+/* Question items - eliminate the 808.9px overflow */
+.wpProQuiz_questionListItem {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+    margin: 5px 0 !important;
+    padding: 0 !important;
+    /* Force static positioning to prevent width calculation issues */
+    position: static !important;
+    left: 0 !important;
+    right: 0 !important;
+}
+
+/* Labels - the main source of overflow */
+.wpProQuiz_questionListItem label {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 12px 15px !important;
+    margin: 0 !important;
+    display: block !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    white-space: normal !important;
+    overflow: hidden !important;
+    /* Critical: Remove any absolute positioning */
+    position: static !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+}
+
+/* Input elements */
+.wpProQuiz_questionInput {
+    margin-left: 8px !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+}
+
+/* Review elements */
+.wpProQuiz_reviewDiv,
+.wpProQuiz_reviewQuestion,
+.wpProQuiz_reviewButtons {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+}
+
+/* Progress elements */
+.wpProQuiz_progress,
+.course_progress,
+.course_progress_blue,
+.sending_progress_bar {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+
+/* Sidebar container fix */
+.quiz-sidebar {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+/* Additional elements that need overflow hidden to eliminate scrollbars */
+h1.entry-title, 
+li.wpProQuiz_listItem {
+    overflow: hidden !important;
+}
+
+/* Fix excessive bottom spacing in rich media sidebar */
+.quiz-sidebar .rich-media-content {
+    margin-bottom: 20px !important;
+    padding-bottom: 10px !important;
+}
+
+.quiz-sidebar {
+    padding-bottom: 20px !important;
 }
 
 /* Override any LearnDash red styling on incorrect answers */

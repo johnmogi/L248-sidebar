@@ -222,9 +222,6 @@ if (typeof jQuery === 'undefined') {
                     $input.prop('checked', true);
                     $wrapper.addClass('lilac-correct-answer');
                     
-                    // Clear any processing indicators first
-                    $wrapper.find('.lilac-processing').remove();
-                    clearInterval($wrapper.data('rotateInterval'));
                     
                     // Force green styling with inline styles using !important to override CSS conflicts
                     $wrapper.find('label').attr('style', 
@@ -424,20 +421,6 @@ if (typeof jQuery === 'undefined') {
                     'transition': 'all 0.15s ease',
                     'box-shadow': '0 2px 8px rgba(0,0,0,0.1)'
                 });
-                
-                // Add subtle processing indicator
-                const $processingIndicator = $('<span class="lilac-processing" style="margin-left: 8px; opacity: 0.7; font-size: 12px;">⟳</span>');
-                $wrapper.find('label').append($processingIndicator);
-                
-                // Animate the processing indicator
-                let rotation = 0;
-                const rotateInterval = setInterval(() => {
-                    rotation += 45;
-                    $processingIndicator.css('transform', `rotate(${rotation}deg)`);
-                }, 100);
-                
-                // Store interval for cleanup
-                $wrapper.data('rotateInterval', rotateInterval);
             }
             
             // Handle post-hint answer selection with optimized timing
@@ -471,10 +454,6 @@ if (typeof jQuery === 'undefined') {
         // Helper function for applying correct answer styling
         function applyCorrectAnswerStyling($question, $wrapper) {
             console.log('[LilacQuiz] Post-hint correct answer detected, applying green styling');
-            
-            // Clear processing indicators
-            $question.find('.lilac-processing').remove();
-            clearInterval($wrapper.data('rotateInterval'));
             
             // Clear all previous styling
             $question.find('.wpProQuiz_questionListItem')
