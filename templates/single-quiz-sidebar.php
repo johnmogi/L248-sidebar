@@ -87,9 +87,58 @@ jQuery(document).ready(function($) {
         <!-- Enhanced Sidebar -->
         <aside class="ld-quiz-sidebar lilac-enhanced-sidebar" role="complementary" aria-label="<?php esc_attr_e('תוכן עזר למבחן', 'lilac-quiz-sidebar'); ?>">
             <?php 
-            // Add back to course button at the top of the sidebar
-            $back_to_course_shortcode = '[back_to_course_button text="בחזרה לקורס"]';
-            echo '<div class="lilac-back-to-course-wrapper" style="text-align: left; margin-bottom: 15px;">' . do_shortcode($back_to_course_shortcode) . '</div>';
+            // Get the current course ID from the quiz
+            $course_id = learndash_get_course_id();
+            $course_url = '#';
+            
+            // If we have a course ID, get its URL
+            if (!empty($course_id)) {
+                $course_url = get_permalink($course_id);
+            }
+            ?>
+            <div class="lilac-back-to-course-wrapper" style="text-align: center; margin: 15px 0;">
+                <a href="#" class="back-to-course-btn" 
+                   data-course-url="<?php echo esc_url($course_url); ?>"
+                   style="display: inline-block; padding: 12px 25px; background-color: rgba(44, 51, 145, 1); color: white; text-decoration: none; border-radius: 25px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                    בחזרה לקורס
+                </a>
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const backButton = document.querySelector('.back-to-course-btn');
+                    if (backButton) {
+                        backButton.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            let courseUrl = this.getAttribute('data-course-url');
+                            
+                            // If we don't have a course URL, try to find it from LearnDash data
+                            if (courseUrl === '#' && typeof LearnDashData !== 'undefined' && LearnDashData.course) {
+                                courseUrl = LearnDashData.course.permalink;
+                            }
+                            
+                            // If we still don't have a URL, try to get it from the breadcrumbs
+                            if (courseUrl === '#' || !courseUrl) {
+                                const breadcrumbLinks = document.querySelectorAll('.ld-breadcrumbs a');
+                                if (breadcrumbLinks.length > 1) {
+                                    courseUrl = breadcrumbLinks[0].href;
+                                }
+                            }
+                            
+                            // If we have a valid URL, navigate to it
+                            if (courseUrl && courseUrl !== '#') {
+                                window.location.href = courseUrl;
+                            }
+                        });
+                    }
+                });
+                </script>
+                <style>
+                .back-to-course-btn:hover {
+                    background-color: rgba(44, 51, 145, 1) !important;
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+                }
+                </style>
+            </div>
             ?>
             
             <div id="question-media" class="question-media-container">
