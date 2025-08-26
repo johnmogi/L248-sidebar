@@ -85,7 +85,12 @@ jQuery(document).ready(function($) {
         </div>
         
         <!-- Enhanced Sidebar -->
-        <aside class="ld-quiz-sidebar" role="complementary" aria-label="<?php esc_attr_e('תוכן עזר למבחן', 'lilac-quiz-sidebar'); ?>">
+        <aside class="ld-quiz-sidebar lilac-enhanced-sidebar" role="complementary" aria-label="<?php esc_attr_e('תוכן עזר למבחן', 'lilac-quiz-sidebar'); ?>">
+            <?php 
+            // Add back to course button at the top of the sidebar
+            $back_to_course_shortcode = '[back_to_course_button text="בחזרה לקורס"]';
+            echo '<div class="lilac-back-to-course-wrapper" style="text-align: left; margin-bottom: 15px;">' . do_shortcode($back_to_course_shortcode) . '</div>';
+            ?>
             
             <div id="question-media" class="question-media-container">
                 <div class="media-loading" style="display: none;">
